@@ -5,10 +5,10 @@ namespace lworm;
 class Mapper {
 
     public static $HOST, $USER, $PASS, $DB;
-    
+
     private $table, $conn, $as_array, $index = 0;
     public $properties;
-    
+
     public function __construct($data, $is_json=false) {
         /**
         *   Constructor creates an object of the class mapper by accepting either table name or json file name.
@@ -31,15 +31,15 @@ class Mapper {
             }
         }
     }
-    
+
     public function __get($key) {
         return isset($this->$key) ? $this->$key : "";
     }
-    
+
     public function load($cond = null) {
-        
+
         $rst= $this->conn->query("SELECT * FROM $this->table LIMIT $this->index, 1");
-        
+
         if($rst->num_rows == 0)
             return false;
         while($row = $rst->fetch_assoc()) {
@@ -48,10 +48,10 @@ class Mapper {
                 $this->as_array[$key] = $value;
             }
         }
-        
+
         return true;
     }
-    
+
     public function next($val = null) {
         if(isset($val))
             $this->index += $val;
@@ -59,18 +59,17 @@ class Mapper {
             $this->index++;
         return $this->load();
     }
-    
-    
+
     public function prev() {
         $this->index ? $this->index-- : 0;
         return $this->load();
     }
-    
+
     public function cast() {
         return $this->as_array;
     }
-    
-    public function __toString() {
+
+	public function __toString() {
         return json_encode($this->as_array);
     }
 }
